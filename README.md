@@ -25,7 +25,7 @@ The following types are provided:
 ```rust
 use erased::Erased;
 
-let mut vec: Vec<Erased> = Vec::new();
+let mut vec: Vec<Erased<'_>> = Vec::new();
 vec.push((&5u64).into());
 vec.push((&"Hello World").into());
 
