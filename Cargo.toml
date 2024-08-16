@@ -1,6 +1,6 @@
 [package]
 name = "erased"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["Jonathan Brouwer <jonathantbrouwer@gmail.com>", "Jonathan Dönszelmann <jonabent@gmail.com>"]
 description = "Erase the type of a reference or box, retaining the lifetime."
 keywords = ["erase", "type", "arena"]
