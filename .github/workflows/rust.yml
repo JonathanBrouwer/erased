@@ -8,29 +8,23 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
+  lint-rust:
+    runs-on: ubuntu-18.04
+    needs: test
     steps:
-      - uses: actions/checkout@v3
-      - name: Install nightly toolchain with lint tools available
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
+          toolchain: ${{ env.RUST_VERSION_STABLE }}
           profile: minimal
-          toolchain: nightly
+          components: rustfmt, clippy
           override: true
-          components: clippy, rustfmt
-
-      - name: Run cargo fmt
-        uses: actions-rs/cargo@v1
-        with:
-          command: fmt
-          args: --all -- --check
-
-      - uses: actions-rs/clippy-check@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          args: --all-features
+      - name: Run clippy
+        run: cargo clippy -- -D warnings
+      - name: Run rustfmt
+        run: cargo fmt -- --check
   test:
     name: Test Stable
     runs-on: ubuntu-latest
