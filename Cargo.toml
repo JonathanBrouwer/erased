@@ -2,7 +2,7 @@
 name = "erased"
 version = "0.1.0"
 authors = ["Jonathan Brouwer <jonathantbrouwer@gmail.com>", "Jonathan Dönszelmann <jonabent@gmail.com>"]
-description = "Erase the type of a value, safely."
+description = "Erase the type of a reference or box, retaining the lifetime."
 keywords = ["erase", "type", "arena"]
 edition = "2021"
 license = "MIT"
