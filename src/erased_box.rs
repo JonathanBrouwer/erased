@@ -1,26 +1,63 @@
 use std::ptr::NonNull;
 
-/// Warning: dropping leaks
+/// A box with an erased type.
+///
+/// # Warning
+/// This type **leaks** the Box when it is dropped.
+/// To ensure that the Box is not leaked, call `into_inner` on it before it is dropped.
+///
+/// Example:
+/// ```rs
+/// use erased::ErasedBox;
+///
+/// let b: Box<usize> = Box::new(5usize);
+/// let erased: ErasedBox = ErasedBox::new(b);
+///
+/// let v = erased.into_inner::<usize>();
+/// assert_eq!(v, 5);
+/// ```
 #[derive(Debug)]
 pub struct ErasedBox {
     ptr: NonNull<()>,
 }
 
 impl ErasedBox {
+    /// Create a new erased box from a `Box<T>`
     pub fn new<T>(t: Box<T>) -> ErasedBox {
         Self {
             ptr: NonNull::from(Box::leak(t)).cast(),
         }
     }
 
-    pub unsafe fn get<T>(self) -> Box<T> {
+    /// Get a normal box `Box<T>` back from the erased box.
+    ///
+    /// # Safety
+    /// The generic argument `T` of this function must match the `T` that was used to create this erased box in `ErasedBox::new` exactly.
+    /// Pay specific attention that any lifetime parameters of `T` match.
+    ///
+    /// It is **strongly recommended** to provide `T` explicitly, even if it can be inferred. This is to make sure that the value of `T` is not accidentally changed.
+    pub unsafe fn into_inner<T>(self) -> Box<T> {
         Box::from_raw(self.ptr.cast::<T>().as_mut())
     }
 
+    /// Get a reference to the value in this box.
+    ///
+    /// # Safety
+    /// The generic argument `T` of this function must match the `T` that was used to create this erased box in `ErasedBox::new` exactly.
+    /// Pay specific attention that any lifetime parameters of `T` match.
+    ///
+    /// It is **strongly recommended** to provide `T` explicitly, even if it can be inferred. This is to make sure that the value of `T` is not accidentally changed.
     pub unsafe fn get_ref<T>(&self) -> &T {
         self.ptr.cast::<T>().as_ref()
     }
 
+    /// Get a mutable reference to the value in this box.
+    ///
+    /// # Safety
+    /// The generic argument `T` of this function must match the `T` that was used to create this erased box in `ErasedBox::new` exactly.
+    /// Pay specific attention that any lifetime parameters of `T` match.
+    ///
+    /// It is **strongly recommended** to provide `T` explicitly, even if it can be inferred. This is to make sure that the value of `T` is not accidentally changed.
     pub unsafe fn get_mut<T>(&mut self) -> &mut T {
         self.ptr.cast::<T>().as_mut()
     }
@@ -39,7 +76,7 @@ mod tests {
     #[test]
     fn basic_test() {
         let erased = ErasedBox::new(Box::new(5usize));
-        let r2 = unsafe { erased.get::<usize>() };
+        let r2 = unsafe { erased.into_inner::<usize>() };
         assert_eq!(*r2, 5);
     }
 
@@ -51,6 +88,6 @@ mod tests {
         assert_eq!(*unsafe { erased.get_ref::<usize>() }, 42);
 
         // Drop `erased`
-        unsafe { erased.get::<usize>() };
+        unsafe { erased.into_inner::<usize>() };
     }
 }
