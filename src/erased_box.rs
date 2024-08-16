@@ -47,7 +47,10 @@ mod tests {
     fn ref_test() {
         let mut erased = ErasedBox::new(Box::new(5usize));
         assert_eq!(*unsafe { erased.get_ref::<usize>() }, 5);
-        * unsafe { erased.get_mut::<usize>() } = 42;
+        *unsafe { erased.get_mut::<usize>() } = 42;
         assert_eq!(*unsafe { erased.get_ref::<usize>() }, 42);
+
+        // Drop `erased`
+        unsafe { erased.get::<usize>() };
     }
 }
