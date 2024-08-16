@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 mod erased_ref;
 mod erased_mut_ref;
 mod erased_box;
