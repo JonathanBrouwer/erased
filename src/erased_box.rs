@@ -7,14 +7,15 @@ use std::ptr::NonNull;
 /// To ensure that the Box is not leaked, call `into_inner` on it before it is dropped.
 ///
 /// Example:
-/// ```rs
+/// ```rust
 /// use erased::ErasedBox;
 ///
 /// let b: Box<usize> = Box::new(5usize);
 /// let erased: ErasedBox = ErasedBox::new(b);
 ///
-/// let v = erased.into_inner::<usize>();
-/// assert_eq!(v, 5);
+/// /// Safety: The type given to `into_inner` matches the give of `b`.
+/// let v: Box<usize> = unsafe { erased.into_inner::<usize>() };
+/// assert_eq!(*v, 5usize);
 /// ```
 #[derive(Debug)]
 pub struct ErasedBox {

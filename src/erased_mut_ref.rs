@@ -4,7 +4,7 @@ use std::ptr::NonNull;
 /// An erased mutable reference to a value `&'a mut T`
 ///
 /// Example:
-/// ```rs
+/// ```rust
 /// use erased::ErasedMut;
 ///
 /// let value = &mut 5usize;

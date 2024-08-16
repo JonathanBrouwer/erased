@@ -4,7 +4,7 @@ use std::ptr::NonNull;
 /// An erased reference to a value `&'a T`
 ///
 /// Example:
-/// ```rs
+/// ```rust
 /// use erased::Erased;
 ///
 /// let mut vec: Vec<Erased> = Vec::new();
