@@ -39,6 +39,7 @@ impl<'a> Erased<'a> {
     ///
     /// It is **strongly recommended** to provide `T` explicitly, even if it can be inferred. This is to make sure that the value of `T` is not accidentally changed.
     pub unsafe fn get<T>(&self) -> &'a T {
+        // Safety: From the safety comment the `T` matches the `T` this erased reference was created with. The reference is still valid since its lifetime `'a` is still alive.
         self.ptr.cast::<T>().as_ref()
     }
 }

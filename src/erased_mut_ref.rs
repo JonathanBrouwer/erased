@@ -40,6 +40,8 @@ impl<'a> ErasedMut<'a> {
     ///
     /// It is **strongly recommended** to provide `T` explicitly, even if it can be inferred. This is to make sure that the value of `T` is not accidentally changed.
     pub unsafe fn get<T>(&mut self) -> &'a mut T {
+        // Safety: From the safety comment the `T` matches the `T` this erased mutable reference was created with.
+        // The mutable reference is still valid since its lifetime `'a` is still alive, and the `&mut self` provides exclusive access.
         self.ptr.cast::<T>().as_mut()
     }
 
@@ -51,6 +53,7 @@ impl<'a> ErasedMut<'a> {
     ///
     /// It is **strongly recommended** to provide `T` explicitly, even if it can be inferred. This is to make sure that the value of `T` is not accidentally changed.
     pub unsafe fn get_ref<T>(&self) -> &'a T {
+        // Safety: From the safety comment the `T` matches the `T` this reference was created with. The reference is still valid since its lifetime `'a` is still alive.
         self.ptr.cast::<T>().as_ref()
     }
 }
